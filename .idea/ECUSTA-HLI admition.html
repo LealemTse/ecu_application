@@ -825,78 +825,184 @@
                 </div>
             </div>
 
-            <div class="section-divider"></div>
+<!--            <div class="section-divider"></div>-->
 
+<!--            <div class="radio-group">-->
+<!--                <label class="radio-label">What Science Stream were you in High/Secondary School</label>-->
+<!--                <div class="radio-options" style="max-width: 400px; margin: 0 auto;">-->
+<!--                    <label class="radio-option">-->
+<!--                        <input type="radio" name="science-stream" value="natural">-->
+<!--                        <span class="radio-icon"></span>-->
+<!--                        <span class="radio-text">Natural Science</span>-->
+<!--                    </label>-->
+<!--                    <label class="radio-option">-->
+<!--                        <input type="radio" name="science-stream" value="social">-->
+<!--                        <span class="radio-icon"></span>-->
+<!--                        <span class="radio-text">Social Science</span>-->
+<!--                    </label>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Natural Science Results &ndash;&gt;-->
+<!--            <div class="section-divider"></div>-->
+<!--            <p class="radio-label">Natural Science Grade 12 EHEECE Results of:</p>-->
+
+<!--            <div class="results-grid">-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Physics">-->
+<!--                    <input type="text" class="form-input" placeholder="Mathematics">-->
+<!--                    <input type="text" class="form-input" placeholder="English">-->
+<!--                </div>-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Chemistry">-->
+<!--                    <input type="text" class="form-input" placeholder="Biology">-->
+<!--                    <input type="text" class="form-input" placeholder="Aptitude">-->
+<!--                </div>-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Civics">-->
+<!--                    <input type="text" class="form-input" placeholder="TOTAL SCORE">-->
+<!--                    <div></div>-->
+<!--                </div>-->
+<!--                <div class="results-row">-->
+<!--                    <div></div>-->
+<!--                    <input type="text" class="form-input" placeholder="Year Taken (MM/YY)">-->
+<!--                    <div></div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Social Science Results &ndash;&gt;-->
+<!--            <div class="section-divider"></div>-->
+<!--            <p class="radio-label">Social Science Grade 12 EHEECE Results of</p>-->
+
+<!--            <div class="results-grid">-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Geography">-->
+<!--                    <input type="text" class="form-input" placeholder="Mathematics">-->
+<!--                    <input type="text" class="form-input" placeholder="English">-->
+<!--                </div>-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Economics">-->
+<!--                    <input type="text" class="form-input" placeholder="History" required>-->
+<!--                    <input type="text" class="form-input" placeholder="Aptitude" required>-->
+<!--                </div>-->
+<!--                <div class="results-row">-->
+<!--                    <input type="text" class="form-input" placeholder="Civics">-->
+<!--                    <input type="text" class="form-input" placeholder="TOTAL SCORE" required>-->
+<!--                    <div></div>-->
+<!--                </div>-->
+<!--                <div class="results-row" >-->
+<!--                    <div></div>-->
+<!--                    <input type="text" class="form-input" placeholder="Year Taken (MM/YY)" required>-->
+<!--                    <div></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </section>-->
+            <style>
+                /* Smooth fade-in animation */
+                .hidden-section {
+                    display: none;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+                .visible-section {
+                    display: block;
+                    opacity: 1;
+                }
+            </style>
+
+            <!-- Radio Options -->
             <div class="radio-group">
                 <label class="radio-label">What Science Stream were you in High/Secondary School</label>
                 <div class="radio-options" style="max-width: 400px; margin: 0 auto;">
                     <label class="radio-option">
                         <input type="radio" name="science-stream" value="natural">
-                        <span class="radio-icon"></span>
                         <span class="radio-text">Natural Science</span>
                     </label>
                     <label class="radio-option">
                         <input type="radio" name="science-stream" value="social">
-                        <span class="radio-icon"></span>
                         <span class="radio-text">Social Science</span>
                     </label>
                 </div>
             </div>
 
-            <!-- Natural Science Results -->
-            <div class="section-divider"></div>
-            <p class="radio-label">Natural Science Grade 12 EHEECE Results of:</p>
-
-            <div class="results-grid">
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Physics">
-                    <input type="text" class="form-input" placeholder="Mathematics">
-                    <input type="text" class="form-input" placeholder="English">
-                </div>
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Chemistry">
-                    <input type="text" class="form-input" placeholder="Biology">
-                    <input type="text" class="form-input" placeholder="Aptitude">
-                </div>
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Civics">
-                    <input type="text" class="form-input" placeholder="TOTAL SCORE">
-                    <div></div>
-                </div>
-                <div class="results-row">
-                    <div></div>
-                    <input type="text" class="form-input" placeholder="Year Taken (MM/YY)">
-                    <div></div>
+            <!-- NATURAL SCIENCE SECTION -->
+            <div id="natural-section" class="hidden-section">
+                <div class="section-divider"></div>
+                <p class="radio-label">Natural Science Grade 12 EHEECE Results of:</p>
+                <!-- your existing inputs -->
+                <div class="results-grid">
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Physics">
+                        <input type="text" class="form-input" placeholder="Mathematics">
+                        <input type="text" class="form-input" placeholder="English">
+                    </div>
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Chemistry">
+                        <input type="text" class="form-input" placeholder="Biology">
+                        <input type="text" class="form-input" placeholder="Aptitude">
+                    </div>
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Civics">
+                        <input type="text" class="form-input" placeholder="TOTAL SCORE">
+                    </div>
                 </div>
             </div>
 
-            <!-- Social Science Results -->
-            <div class="section-divider"></div>
-            <p class="radio-label">Social Science Grade 12 EHEECE Results of</p>
-
-            <div class="results-grid">
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Geography">
-                    <input type="text" class="form-input" placeholder="Mathematics">
-                    <input type="text" class="form-input" placeholder="English">
-                </div>
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Economics">
-                    <input type="text" class="form-input" placeholder="History" required>
-                    <input type="text" class="form-input" placeholder="Aptitude" required>
-                </div>
-                <div class="results-row">
-                    <input type="text" class="form-input" placeholder="Civics">
-                    <input type="text" class="form-input" placeholder="TOTAL SCORE" required>
-                    <div></div>
-                </div>
-                <div class="results-row" >
-                    <div></div>
-                    <input type="text" class="form-input" placeholder="Year Taken (MM/YY)" required>
-                    <div></div>
+            <!-- SOCIAL SCIENCE SECTION -->
+            <div id="social-section" class="hidden-section">
+                <div class="section-divider"></div>
+                <p class="radio-label">Social Science Grade 12 EHEECE Results of:</p>
+                <!-- your existing inputs -->
+                <div class="results-grid">
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Geography">
+                        <input type="text" class="form-input" placeholder="Mathematics">
+                        <input type="text" class="form-input" placeholder="English">
+                    </div>
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Economics">
+                        <input type="text" class="form-input" placeholder="History">
+                        <input type="text" class="form-input" placeholder="Aptitude">
+                    </div>
                 </div>
             </div>
-        </section>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const naturalSection = document.getElementById('natural-section');
+                    const socialSection = document.getElementById('social-section');
+
+                    function showSection(sectionToShow, sectionToHide) {
+                        sectionToHide.classList.remove('visible-section');
+                        setTimeout(() => (sectionToHide.classList.add('hidden-section')), 300);
+
+                        sectionToShow.classList.remove('hidden-section');
+                        setTimeout(() => (sectionToShow.classList.add('visible-section')), 10);
+
+                        sectionToShow.scrollIntoView({ behavior: "smooth" });
+
+                        setRequired(sectionToShow, true);
+                        setRequired(sectionToHide, false);
+                    }
+
+                    function setRequired(section, required) {
+                        section.querySelectorAll('input').forEach(input => {
+                            required ? input.setAttribute('required', 'required')
+                                : input.removeAttribute('required');
+                        });
+                    }
+
+                    document.querySelectorAll('input[name="science-stream"]').forEach(radio => {
+                        radio.addEventListener('change', () => {
+                            if (radio.value === 'natural') {
+                                showSection(naturalSection, socialSection);
+                            } else {
+                                showSection(socialSection, naturalSection);
+                            }
+                        });
+                    });
+                });
+            </script>
 
         <!-- Field of Study Section -->
         <section id="field" class="form-section">
