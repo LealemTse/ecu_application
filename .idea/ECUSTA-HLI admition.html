@@ -942,7 +942,7 @@
                         <input type="text" class="form-input" placeholder="Aptitude">
                     </div>
                     <div class="results-row">
-                        <input type="text" class="form-input" placeholder="Civics">
+                        <input type="text" class="form-input" placeholder="Civics (If not taken give 0 as value)">
                         <input type="text" class="form-input" placeholder="TOTAL SCORE">
                     </div>
                 </div>
@@ -963,6 +963,10 @@
                         <input type="text" class="form-input" placeholder="Economics">
                         <input type="text" class="form-input" placeholder="History">
                         <input type="text" class="form-input" placeholder="Aptitude">
+                    </div>
+                    <div class="results-row">
+                        <input type="text" class="form-input" placeholder="Civics (If not taken give 0 as value)">
+                        <input type="text" class="form-input" placeholder="TOTAL SCORE">
                     </div>
                 </div>
             </div>
@@ -1216,44 +1220,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const scienceRadios=document.querySelectorAll('input[name="science-stream"]');
-        const naturalSection=document.querySelectorAll('#natural-section');
-        const socialSection=document.querySelectorAll('#social-section');
 
-        function toggleSections(){
-            const selectedValue = document.querySelector('input[name="science-stream"]:checked')
-
-            if(selectedValue== 'natural'){
-                naturalSection.style.display = 'block';
-                socialSection.style.display = 'none';
-                setRequired(naturalSection, true);
-                setRequired(socialSection, false);
-            }else(selectedValue=='social'){
-                socialSection.style.display = 'block';
-                naturalSection.style.display = 'none';
-                setRequired(socialSection, true);
-                setRequired(naturalSection, false);
-            }else{
-                naturalSection.style.display = 'none';
-                socialSection.style.display = 'none';
-                setRequired(naturalSection, false);
-                setRequired(socialSection, false);
-            }
-        }
-        function setRequired(section, required){
-            section.querySelectorAll('input').forEach(input => {
-                if(required){
-                    input.addEventListener('required', 'required');
-                }else{
-                    input.removeAttribute('required');
-                }
-            });
-        }
-        scienceRadios.forEach(radio => radio.addEventListener('change', toggleSections));
-        toggleSections();
-    })
-</script>
-
-</body></html>
+</body>
+</html>
