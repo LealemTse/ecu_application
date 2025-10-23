@@ -22,22 +22,31 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Create MongoStore and listen for errors
+const store = MongoStore.create({
+    mongoUrl: MONGO_URI,
+    collectionName: 'sessions'
+});
+
+store.on('error', (err) => {
+    console.error('Session store error:', err);
+});
+
+// Session middleware
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: MONGO_URI,
-        collectionName: 'sessions',
-    }),
+    store,
     cookie: {
         httpOnly: true,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 2, // 2 hours
+        secure: false,      // false for HTTP, true if HTTPS
+        sameSite: 'lax',    // important for redirects
+        maxAge: 1000 * 60 * 60 * 2 // 2 hours
     }
 }));
 
-// Serve static files (login.html, admin.html, etc.)
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Admin schema
@@ -46,7 +55,6 @@ const adminSchema = new mongoose.Schema({
     passwordHash: { type: String, required: true },
     role: { type: String, default: 'admin' }
 });
-
 const Admin = mongoose.model('Admin', adminSchema);
 
 // Middleware to protect admin page
@@ -81,22 +89,29 @@ app.post('/login', async (req, res) => {
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return res.redirect('/');
 
-        // Success
+        // Success: set session
         req.session.userId = user._id;
         req.session.username = user.username;
         req.session.role = user.role;
 
-        res.redirect('/admin.html');
+        // Save session before redirect
+        req.session.save(err => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.redirect('/');
+            }
+            res.redirect('/admin.html');
+        });
     } catch (err) {
         console.error('Login error', err);
         res.redirect('/');
     }
 });
 
-// Logout route
+// Logout
 app.get('/logout', (req, res) => {
     req.session.destroy(err => {
-        if (err) console.error(err);
+        if (err) console.error('Logout error:', err);
         res.redirect('/');
     });
 });

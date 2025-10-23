@@ -28,6 +28,6 @@ async function createAdmin(username, password) {
 
 // Replace with your credentials
 const username = 'admin';
-const password = '#';
+const password = '12345';
 
 createAdmin(username, password);
