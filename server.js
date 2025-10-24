@@ -69,12 +69,12 @@ function requireLogin(req, res, next) {
 
 // Root → login page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.php'));
 });
 
 // Admin page (protected)
 app.get('/admin.html', requireLogin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'public', 'admin.php'));
 });
 
 // Login handler
