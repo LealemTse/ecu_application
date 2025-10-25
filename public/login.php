@@ -1,3 +1,37 @@
+<?php
+session_start();
+require 'config.php';
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if(empty($username) || empty($password)){
+        die("Please enter username and password");
+    }
+
+    $stmt= $conn->prepare("SELECT id, username, password_hash From users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows === 1){
+        $user = $result->fetch_assoc();
+
+        if(password_verify($password, $user["password_hash"])){
+            $_SESSION['admin_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            header("Location: admin.php");
+            exit();
+        }else{
+            echo "Invalid username or password";
+        }
+    }else{
+        echo "Invalid username or password";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,20 +125,18 @@
     </style>
 </head>
 <body>
-<form method="POST" action="/login">
+<form action="login.php" method="post">
 <div class="login-wrapper">
     <div class="login-logo">
         <img src="https://secure-exams.ecusta-hli.edu.et/pluginfile.php/1/core_admin/logo/0x200/1755767380/ecu.png" alt="Secure Exams Logo">
         <h1>ECUSTA-HLI Admin</h1>
     </div>
-
-    <from action="#" method="post">
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Log in</button>
     </from>
 
-    `       <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJTLphmbqHJCdmBKpMVMsMrvNLnMngWbgpMHbLtpfswMkWzdHmNkDlrNZzKTBbDBDkljbSB" class="forgot-password">Lost Password?</a>
+
 
     <div class="login-divider"></div>
 
