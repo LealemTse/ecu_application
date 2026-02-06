@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | ECUSTA-HLI University</title>
+    <link rel="icon" type="image/png" href="./images/imgecu2.png">
+
+    <style>
+        /* --- COPY OF STYLES FROM ADMISSION FORM --- */
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: C059, serif;
+            background-color: #ffffff;
+            color: #0c1e33;
+            line-height: 1.6;
+        }
+
+        /* Layout components */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #0c1e33;
+            padding: 18px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-logo {
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 10px;
+            display: block;
+        }
+
+        .sidebar-divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.48);
+            margin: 10px 0;
+        }
+
+        .sidebar-menu {
+            padding: 28px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: capitalize;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            border-left: 6px solid #ffffff;
+            border-radius: 6px 0 6px 0;
+            font-weight: 600;
+            padding-left: 6px;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .menu-text {
+            margin-left: 20px;
+        }
+
+        /* Adjusted margin since icons might differ */
+
+        .content-area {
+            flex: 1;
+            margin-left: 0;
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hamburger {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #0c1e33;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        /* Header section */
+        .header-section {
+            background-color: #f4f5f7;
+            border: 1px solid #f4f6f7;
+            border-radius: 4px;
+            padding: 12px 6px;
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .welcome-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+
+        .welcome-icon {
+            width: 26px;
+            height: 32px;
+            margin-right: 12px;
+        }
+
+        .welcome-text {
+            font-size: 20px;
+            font-weight: 400;
+            color: #0c1e33;
+            text-transform: capitalize;
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0c1e33;
+            margin: 10px 0 20px;
+        }
+
+        .header-logo {
+            width: 150px;
+            height: 150px;
+        }
+
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background-color: #ced8e5;
+            margin: 8px 0;
+        }
+
+        .section-header {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            border-left: 6px solid #0c1e33;
+            border-radius: 6px 0 6px 0;
+            padding: 4px 16px;
+            margin-bottom: 18px;
+            display: inline-block;
+            width: auto;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0c1e33;
+            text-transform: capitalize;
+        }
+
+        /* Footer / Contact */
+        .contact {
+            background: #4a90b4;
+            padding: 10px 30px;
+            font-family: C059, serif;
+            color: black;
+            margin-top: auto;
+        }
+
+        /* Media Queries */
+        @media (min-width: 768px) {
+            .hamburger {
+                display: none;
+            }
+
+            .sidebar {
+                position: fixed;
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin-left: 280px;
+            }
+
+            .header-logo {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .content-area {
+                padding: 54px 24px;
+            }
+        }
+
+        /* --- ADMIN SPECIFIC STYLES --- */
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #616161;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0c1e33;
+        }
+
+        /* Table Components */
+        .table-container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .table-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            padding: 10px 16px;
+            border: 1px solid #757575;
+            border-radius: 4px;
+            width: 300px;
+            font-family: C059, serif;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0c1e33;
+            box-shadow: 0 0 0 2px rgba(12, 30, 51, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        th {
+            color: #495d72;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        td {
+            color: #0c1e33;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-view {
+            background-color: transparent;
+            color: #0c1e33;
+            border: 1px solid #0c1e33;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: C059, serif;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-view:hover {
+            background-color: #0c1e33;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 30, 51, 0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            cursor: pointer;
+            font-size: 28px;
+            color: #616161;
+        }
+
+        .close-modal:hover {
+            color: #0c1e33;
+        }
+
+        .details-group {
+            margin-bottom: 20px;
+        }
+
+        .details-label {
+            font-weight: 700;
+            color: #495d72;
+            font-size: 14px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .details-value {
+            font-size: 16px;
+            color: #0c1e33;
+        }
+
+        .doc-link {
+            display: inline-block;
+            margin-right: 15px;
+            color: #2a7ae2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .doc-link:hover {
+            text-decoration: underline;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: auto;
+            display: block;
+            width: fit-content;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <img src="images/imgecu2.png" alt="ECUSTA-HLI Logo" class="sidebar-logo">
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active">
+                    <span class="menu-text">Dashboard</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="menu-text">Students List</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="menu-text">Settings</span>
+                </a>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+            <!-- Header Section -->
+            <section class="header-section">
+                <div class="header-content">
+                    <div class="header-left">
+                        <div class="welcome-row">
+                            <img src="images/img.png" alt="Welcome icon" class="welcome-icon">
+                            <h1 class="welcome-text">Admin Dashboard</h1>
+                        </div>
+                        <h2 class="form-title">Overview & Management</h2>
+                        <p class="form-description">
+                            Welcome to the ECUSTA-HLI Administration Portal. Manage student applications, review
+                            submissions, and export data.
+                        </p>
+                    </div>
+                    <img src="images/imgecu2.png" alt="ECUSTA-HLI University Logo" class="header-logo">
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section>
+                <div class="section-header">
+                    <h3 class="section-title">Statistics</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Applications</span>
+                        <span class="stat-value" id="total-count">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Pending Review</span>
+                        <span class="stat-value" id="pending-count">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Approved</span>
+                        <span class="stat-value" id="approved-count">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table Section -->
+            <section>
+                <div class="section-header">
+                    <h3 class="section-title">Student Applications</h3>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header-row">
+                        <input type="text" class="search-input" placeholder="Search by name, email..." id="searchBox">
+                        <!-- Add export button here later if needed -->
+                    </div>
+
+                    <table id="students-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Field of Study</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Javascript will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <section>
+                <div class="contact">
+                    <style>
+                        .contact {
+                            background: #4a90b4;
+                            padding: 10px 30px, ;
+                            font-family: C059;
+                            color: "black";
+                        }
+                    </style>
+                    <!-- Top contact bar -->
+                    <div style="display:flex; justify-content:space-between; font-size:14px; font-family: C059">
+                        <span>Telephone: +251-11-157-8352</span>
+                        <span>Mobile: +251-913-23-9392</span>
+                    </div>
+
+                    <!-- Main banner -->
+                    <div style="display:flex; align-items:center; background:#7ee7f6; margin-top:10px; padding:20px;">
+                        <div>
+                            <img src="images/imgecu2.png" alt="logo">
+                        </div>
+                        <div style="margin-left:80px; font-size:40px; font-family: C059">
+                            ECUSTA Higher Learning Institute <br> Addis Ababa, Ethiopia
+                        </div>
+                    </div>
+
+                    <!-- Bottom contact bar -->
+                    <div
+                        style="display:flex; justify-content:space-between; margin-top:10px; font-size:14px; font-family: C059">
+                        <a href="communications@ecusta-hli.edu.et">Email: communications@ecusta-hli.edu.et</a>
+                        <span>P.O.Box: 27757/1000</span>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="section-header" style="margin-top: 20px;">
+                <h3 class="section-title" id="modal-name">Student Details</h3>
+            </div>
+            <div id="modal-details">
+                <!-- Details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Sidebar Logic ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.querySelector('.hamburger');
+            if (window.innerWidth < 768 && !sidebar.contains(event.target) && !hamburger.contains(event.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // --- Dashboard Logic ---
+        document.addEventListener('DOMContentLoaded', fetchStudents);
+
+        async function fetchStudents() {
+            try {
+                const response = await fetch('/api/students');
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const students = await response.json();
+                renderDashboard(students);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function renderDashboard(students) {
+            // Stats
+            document.getElementById('total-count').innerText = students.length;
+            document.getElementById('pending-count').innerText = students.filter(s => s.status === 'pending').length;
+            document.getElementById('approved-count').innerText = students.filter(s => s.status === 'approved').length;
+
+            // Table
+            const tbody = document.querySelector('#students-table tbody');
+            tbody.innerHTML = '';
+
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${student.firstName} ${student.lastName}</div>
+                        <div style="font-size: 12px; color: #666;">${student.city}, ${student.country}</div>
+                    </td>
+                    <td>${formatField(student.fieldOfStudy)}</td>
+                    <td>${student.email}<br><span style="font-size:12px;color:#666">${student.phoneNumber}</span></td>
+                    <td><span class="status-badge status-${student.status}">${student.status}</span></td>
+                    <td><button class="btn-view" onclick='showDetails(${JSON.stringify(student)})'>View / Actions</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Search Logic
+            document.getElementById('searchBox').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+            });
+        }
+
+        function formatField(field) {
+            if (!field) return 'N/A';
+            return field.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function showDetails(student) {
+            const modal = document.getElementById('detailsModal');
+            document.getElementById('modal-name').innerText = `${student.firstName} ${student.middleName} ${student.lastName}`;
+
+            const detailsHtml = `
+                <div id="view-mode">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <div class="details-group">
+                                <span class="details-label">Personal Info</span>
+                                <div class="details-value">DOB: ${student.dateOfBirth}</div>
+                                <div class="details-value">Gender: ${student.gender}</div>
+                                <div class="details-value">Nationality: ${student.nationality}</div>
+                            </div>
+                            <div class="details-group">
+                                <span class="details-label">Address</span>
+                                <div class="details-value">${student.subCity}, ${student.woreda}</div>
+                                <div class="details-value">${student.city}, ${student.region}, ${student.country}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="details-group">
+                                <span class="details-label">Contact</span>
+                                <div class="details-value">${student.email}</div>
+                                <div class="details-value">${student.phoneNumber}</div>
+                            </div>
+                            <div class="details-group">
+                                <span class="details-label">Guardian</span>
+                                <div class="details-value">${student.guardianName}</div>
+                                <div class="details-value">${student.guardianMobile}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="details-group">
+                        <span class="details-label">Academic Profile</span>
+                        <div class="details-value"><strong>High School:</strong> ${student.highSchoolName}</div>
+                         <div class="details-value"><strong>Score:</strong> ${student.totalScore}</div>
+                        <div class="details-value"><strong>Chosen Field:</strong> ${formatField(student.fieldOfStudy)}</div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="details-group">
+                        <span class="details-label">Documents</span>
+                        <div style="margin-top: 10px;">
+                            ${student.photoPath ? `<a href="/${student.photoPath}" target="_blank" class="doc-link">📷 Photo</a>` : ''}
+                            ${student.transcriptPath ? `<a href="/${student.transcriptPath}" target="_blank" class="doc-link">📄 Transcript</a>` : ''}
+                            ${student.certificatePath ? `<a href="/${student.certificatePath}" target="_blank" class="doc-link">📜 Certificate</a>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 20px;">
+                     ${student.status === 'pending' ? `<button onclick="approveStudent(${student.id})" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;"> Approve</button>` : ''}
+                     <button onclick='enableEditMode(${JSON.stringify(student)})' style="padding: 10px 20px; background: #0c1e33; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;"> Edit Data</button>
+                </div>
+            `;
+
+    <script>
+        // ... (previous functions)
+
+        function showDetails(student) {
+            const modal = document.getElementById('detailsModal');
+            document.getElementById('modal-name').innerText = `${student.firstName} ${student.middleName} ${student.lastName}`;
+
+            // ... (rest of detailsHtml variable until the buttons div)
+            
+            const detailsHtml = `
+                <div id="view-mode">
+                    <!-- ... (Existing layout code) ... -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <div class="details-group">
+                                <span class="details-label">Personal Info</span>
+                                <div class="details-value">DOB: ${student.dateOfBirth}</div>
+                                <div class="details-value">Gender: ${student.gender}</div>
+                                <div class="details-value">Nationality: ${student.nationality}</div>
+                            </div>
+                            <div class="details-group">
+                                <span class="details-label">Address</span>
+                                <div class="details-value">${student.subCity}, ${student.woreda}</div>
+                                <div class="details-value">${student.city}, ${student.region}, ${student.country}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="details-group">
+                                <span class="details-label">Contact</span>
+                                <div class="details-value">${student.email}</div>
+                                <div class="details-value">${student.phoneNumber}</div>
+                            </div>
+                            <div class="details-group">
+                                <span class="details-label">Guardian</span>
+                                <div class="details-value">${student.guardianName}</div>
+                                <div class="details-value">${student.guardianMobile}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="details-group">
+                        <span class="details-label">Academic Profile</span>
+                        <div class="details-value"><strong>High School:</strong> ${student.highSchoolName}</div>
+                         <div class="details-value"><strong>Score:</strong> ${student.totalScore}</div>
+                        <div class="details-value"><strong>Chosen Field:</strong> ${formatField(student.fieldOfStudy)}</div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="details-group">
+                        <span class="details-label">Documents</span>
+                        <div style="margin-top: 10px;">
+                            ${student.photoPath ? `<a href="/${student.photoPath}" target="_blank" class="doc-link">📷 Photo</a>` : ''}
+                            ${student.transcriptPath ? `<a href="/${student.transcriptPath}" target="_blank" class="doc-link">📄 Transcript</a>` : ''}
+                            ${student.certificatePath ? `<a href="/${student.certificatePath}" target="_blank" class="doc-link">📜 Certificate</a>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 20px;">
+                     <button onclick="window.open('/api/students/${student.id}/export', '_blank')" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: auto;">📄 Export PDF</button>
+
+                     ${student.status === 'pending' ? `<button onclick="approveStudent(${student.id})" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">✅ Approve</button>` : ''}
+                     <button onclick='enableEditMode(${JSON.stringify(student)})' style="padding: 10px 20px; background: #0c1e33; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">✏️ Edit Data</button>
+                </div>
+            `;
+
+            document.getElementById('modal-details').innerHTML = detailsHtml;
+            modal.style.display = 'flex';
+        }
+
+        function enableEditMode(student) {
+            const container = document.getElementById('modal-details');
+            container.innerHTML = `
+                <form id="edit-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+                    <!-- Personal Information -->
+                    <div style="grid-column: 1 / -1;">
+                        <h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; color: #495d72;">Personal Information</h4>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="details-label">First Name</label>
+                        <input class="form-input" name="firstName" value="${student.firstName || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Middle Name</label>
+                        <input class="form-input" name="middleName" value="${student.middleName || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Last Name</label>
+                        <input class="form-input" name="lastName" value="${student.lastName || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Gender</label>
+                        <select class="form-input" name="gender" style="width:100%;">
+                            <option value="male" ${student.gender === 'male' ? 'selected' : ''}>Male</option>
+                            <option value="female" ${student.gender === 'female' ? 'selected' : ''}>Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Date of Birth</label>
+                        <input class="form-input" type="date" name="dateOfBirth" value="${student.dateOfBirth || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Place of Birth</label>
+                        <input class="form-input" name="placeOfBirth" value="${student.placeOfBirth || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Nationality</label>
+                        <input class="form-input" name="nationality" value="${student.nationality || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Marital Status</label>
+                         <select class="form-input" name="maritalStatus" style="width:100%;">
+                            <option value="single" ${student.maritalStatus === 'single' ? 'selected' : ''}>Single</option>
+                            <option value="married" ${student.maritalStatus === 'married' ? 'selected' : ''}>Married</option>
+                            <option value="divorced" ${student.maritalStatus === 'divorced' ? 'selected' : ''}>Divorced</option>
+                            <option value="widowed" ${student.maritalStatus === 'widowed' ? 'selected' : ''}>Widowed</option>
+                        </select>
+                    </div>
+
+                    <!-- Contact -->
+                    <div style="grid-column: 1 / -1; margin-top: 10px;">
+                        <h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; color: #495d72;">Contact & Address</h4>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="details-label">Email</label>
+                        <input class="form-input" name="email" value="${student.email || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Phone Number</label>
+                        <input class="form-input" name="phoneNumber" value="${student.phoneNumber || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Country</label>
+                        <input class="form-input" name="country" value="${student.country || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Region</label>
+                        <input class="form-input" name="region" value="${student.region || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">City</label>
+                        <input class="form-input" name="city" value="${student.city || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Sub City</label>
+                        <input class="form-input" name="subCity" value="${student.subCity || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Woreda</label>
+                        <input class="form-input" name="woreda" value="${student.woreda || ''}" style="width:100%;">
+                    </div>
+
+                    <!-- Guardian -->
+                    <div style="grid-column: 1 / -1; margin-top: 10px;">
+                        <h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; color: #495d72;">Guardian Information</h4>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="details-label">Guardian Name</label>
+                        <input class="form-input" name="guardianName" value="${student.guardianName || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Guardian Mobile</label>
+                        <input class="form-input" name="guardianMobile" value="${student.guardianMobile || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Guardian City</label>
+                        <input class="form-input" name="guardianCity" value="${student.guardianCity || ''}" style="width:100%;">
+                    </div>
+
+                    <!-- Academic -->
+                    <div style="grid-column: 1 / -1; margin-top: 10px;">
+                        <h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; color: #495d72;">Academic Profile</h4>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="details-label">High School Name</label>
+                        <input class="form-input" name="highSchoolName" value="${student.highSchoolName || ''}" style="width:100%;">
+                    </div>
+                    <div class="form-group">
+                        <label class="details-label">Science Stream</label>
+                        <select class="form-input" name="scienceStream" style="width:100%;">
+                            <option value="natural" ${student.scienceStream === 'natural' ? 'selected' : ''}>Natural Science</option>
+                            <option value="social" ${student.scienceStream === 'social' ? 'selected' : ''}>Social Science</option>
+                        </select>
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Total Score (Grade 12)</label>
+                        <input class="form-input" type="number" name="totalScore" value="${student.totalScore || ''}" style="width:100%;">
+                    </div>
+                     <div class="form-group">
+                        <label class="details-label">Field of Study</label>
+                        <input class="form-input" name="fieldOfStudy" value="${student.fieldOfStudy || ''}" style="width:100%;">
+                    </div>
+                </form>
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 20px;">
+                     <button onclick="closeModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+                     <button onclick="saveStudent(${student.id})" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">💾 Save Changes</button>
+                </div>
+            `;
+        }
+
+        async function saveStudent(id) {
+            const form = document.getElementById('edit-form');
+            const data = {};
+            new FormData(form).forEach((value, key) => data[key] = value);
+
+            try {
+                const response = await fetch('/api/students/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Student updated successfully!');
+                    closeModal();
+                    fetchStudents(); // Refresh table
+                } else {
+                    const err = await response.json();
+                    alert('Error updating student: ' + (err.message || response.statusText));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error: ' + err.message);
+            }
+        }
+
+        async function approveStudent(id) {
+            if (!confirm('Are you sure you want to approve this student?')) return;
+
+            try {
+                const response = await fetch('/api/students/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'approved' })
+                });
+
+                if (response.ok) {
+                    alert('Student approved!');
+                    closeModal();
+                    fetchStudents(); // Refresh table
+                } else {
+                    const err = await response.json();
+                    alert('Error approving student: ' + (err.message || response.statusText));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error: ' + err.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/login.html';
+            } catch (err) {
+                console.error('Logout failed', err);
+            }
+        }
+    </script>
+</body>
+
+</html>
