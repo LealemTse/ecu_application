@@ -1,8 +1,14 @@
 # Default ignored files
-/shelf/
+/shelf
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# Ignore all IDE-specific directories
+/.idea/
+/.idea_modules/
+/*.iml
+/.DS_Store

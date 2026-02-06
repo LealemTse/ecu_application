@@ -748,11 +748,11 @@
                 </div>
                 
                 <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #eee; padding-top: 20px;">
-                    <button onclick="window.open('/api/students/${student.id}/export', '_blank')" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: auto;">📄 Export PDF</button>
+                    <button onclick="window.open('/api/students/${student.id}/export', '_blank')" style="padding: 10px 20px; background: #2b547e; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-right: auto;">Export PDF</button>
 
-                     <button onclick="deleteStudent(${student.id})" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">🗑️ Delete</button>
-                     ${student.status === 'pending' ? `<button onclick="approveStudent(${student.id})" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">✅ Approve</button>` : ''}
-                     <button onclick='enableEditMode(${JSON.stringify(student)})' style="padding: 10px 20px; background: #0c1e33; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">✏️ Edit Data</button>
+                     <button onclick="deleteStudent(${student.id})" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Delete</button>
+                     ${student.status === 'pending' ? `<button onclick="approveStudent(${student.id})" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;"> Approve</button>` : ''}
+                     <button onclick='enableEditMode(${JSON.stringify(student)})' style="padding: 10px 20px; background: #0c1e33; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Edit Data</button>
                 </div>
             `;
 
