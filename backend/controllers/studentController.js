@@ -1,5 +1,7 @@
 const Student = require('../models/Student');
 const path = require('path');
+const fs = require('fs');
+const { spawn } = require('child_process');
 
 // Create new student application
 exports.createStudent = async (req, res) => {
@@ -39,6 +41,11 @@ exports.createStudent = async (req, res) => {
         });
 
         studentData.additionalSchools = additionalSchools;
+
+        // Validate dateOfBirth - if invalid, set to null
+        if (studentData.dateOfBirth === 'Invalid date' || studentData.dateOfBirth === '' || !studentData.dateOfBirth) {
+            studentData.dateOfBirth = null;
+        }
 
         const newStudent = await Student.create(studentData);
         res.status(201).json({ message: 'Application submitted successfully', studentId: newStudent.id });
@@ -110,16 +117,11 @@ exports.updateStudent = async (req, res) => {
         res.status(200).json({ message: 'Student updated successfully', student });
     } catch (error) {
         console.error('Error updating student:', error);
-    } catch (error) {
-        console.error('Error updating student:', error);
         res.status(500).json({ message: 'Error updating student' });
     }
 };
 
 // Export to PDF
-const fs = require('fs');
-const { spawn } = require('child_process');
-
 exports.exportStudentPDF = async (req, res) => {
     try {
         const student = await Student.findByPk(req.params.id);
@@ -128,23 +130,31 @@ exports.exportStudentPDF = async (req, res) => {
         }
 
         // Create temp JSON data file
-        const tempJsonPath = path.join(__dirname, `../temp/student_${student.id}.json`);
-        
+        const tempDir = path.join(__dirname, '../temp');
+        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+        const tempJsonPath = path.join(tempDir, `student_${student.id}.json`);
+
         // Prepare data with absolute paths for the python script
         const studentData = student.toJSON();
-        
+
         // Helper to resolve absolute path
         const resolvePath = (p) => p ? path.resolve(__dirname, '..', p) : null;
-        
+
         if (studentData.photoPath) studentData.photoPath = resolvePath(studentData.photoPath);
         if (studentData.transcriptPath) studentData.transcriptPath = resolvePath(studentData.transcriptPath);
         if (studentData.certificatePath) studentData.certificatePath = resolvePath(studentData.certificatePath);
 
         fs.writeFileSync(tempJsonPath, JSON.stringify(studentData));
 
-        // Spawn Python process
-        const pythonProcess = spawn('python3', [
-            path.join(__dirname, '../scripts/generate_pdf.py'),
+        // Spawn Python process using the VENV python executable
+        const pythonExecutable = path.resolve(__dirname, '../venv/bin/python3');
+        const scriptPath = path.resolve(__dirname, '../scripts/generate_pdf.py');
+
+        console.log(`Executing PDF generation: ${pythonExecutable} ${scriptPath} ${tempJsonPath}`);
+
+        const pythonProcess = spawn(pythonExecutable, [
+            scriptPath,
             tempJsonPath
         ]);
 
@@ -161,7 +171,7 @@ exports.exportStudentPDF = async (req, res) => {
 
         pythonProcess.on('close', (code) => {
             // Cleanup JSON
-            try { fs.unlinkSync(tempJsonPath); } catch(e) {}
+            try { fs.unlinkSync(tempJsonPath); } catch (e) { }
 
             if (code !== 0) {
                 console.error('Python Script Error:', errorData);
@@ -172,16 +182,48 @@ exports.exportStudentPDF = async (req, res) => {
             if (fs.existsSync(pdfPath)) {
                 res.download(pdfPath, `application_${student.firstName}_${student.lastName}.pdf`, (err) => {
                     if (err) console.error('Error downloading file:', err);
-                    // Cleanup generated PDF? Maybe keep for cache, or delete
-                    // fs.unlinkSync(pdfPath); 
                 });
             } else {
-                res.status(500).json({ message: 'PDF file was not generated.' });
+                console.error('PDF not found at path:', pdfPath);
+                res.status(500).json({ message: 'PDF file was not generated.', details: outputData });
             }
         });
 
     } catch (error) {
         console.error('Error in export:', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Delete student
+exports.deleteStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const student = await Student.findByPk(id);
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        // Optional: Delete associated files if needed
+        const deleteFile = (filePath) => {
+            if (filePath && fs.existsSync(filePath)) {
+                try {
+                    fs.unlinkSync(filePath);
+                } catch (e) {
+                    console.error('Error deleting file:', filePath, e);
+                }
+            }
+        };
+
+        deleteFile(student.photoPath);
+        deleteFile(student.transcriptPath);
+        deleteFile(student.certificatePath);
+
+        await student.destroy();
+        res.status(200).json({ message: 'Student deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting student:', error);
+        res.status(500).json({ message: 'Error deleting student' });
     }
 };

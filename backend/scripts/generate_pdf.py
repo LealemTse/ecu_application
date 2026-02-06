@@ -1,6 +1,7 @@
 import sys
 import json
 import os
+import shutil
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle, PageBreak
@@ -22,8 +23,6 @@ def generate_pdf(data_file):
         story = []
 
         # --- Header ---
-        # Logo (if exists) - defaulting to text if no logo file found
-        # story.append(Image('config/logo.png', width=2*inch, height=1*inch)) # Example
         
         title_style = ParagraphStyle(
             'Title',
@@ -42,12 +41,14 @@ def generate_pdf(data_file):
             photo_path = student['photoPath']
             if os.path.exists(photo_path):
                 # Resize keeping aspect ratio
-                img = Image(photo_path)
-                img.drawHeight = 2.0*inch
-                img.drawWidth = 2.0*inch
-                # img.hAlign = 'RIGHT'
-                story.append(img)
-                story.append(Spacer(1, 12))
+                try:
+                    img = Image(photo_path)
+                    img.drawHeight = 2.0*inch
+                    img.drawWidth = 2.0*inch
+                    story.append(img)
+                    story.append(Spacer(1, 12))
+                except Exception as e:
+                    print(f"Warning: Could not load photo {photo_path}: {e}", file=sys.stderr)
 
         # --- Details ---
         
@@ -155,16 +156,18 @@ def generate_pdf(data_file):
                             merger.append(f)
                     except Exception as e:
                         print(f"Warning: Could not merge PDF {path}: {e}", file=sys.stderr)
-                elif ext in ['.jpg', '.jpeg', '.png']:
+                elif ext in ['.jpg', '.jpeg', '.png', '.webp']:
                     # Convert image to PDF page
                     try:
                         img_temp_pdf = path + ".temp.pdf"
                         img = PILImage.open(path)
-                        img = img.convert('RGB')
+                        if img.mode != 'RGB':
+                            img = img.convert('RGB')
                         img.save(img_temp_pdf)
                         with open(img_temp_pdf, "rb") as f:
                             merger.append(f)
-                        # os.remove(img_temp_pdf) # Clean up later
+                        # We won't delete temp files automatically here to be safe, 
+                        # but in production, we should cleanup.
                     except Exception as e:
                          print(f"Warning: Could not merge Image {path}: {e}", file=sys.stderr)
 
@@ -175,6 +178,8 @@ def generate_pdf(data_file):
         print(final_output) # Print final path for Node.js to read
 
     except Exception as e:
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
 

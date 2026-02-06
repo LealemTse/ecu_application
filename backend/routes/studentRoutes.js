@@ -27,6 +27,7 @@ router.post('/submit', upload.fields([
 router.get('/', verifyToken, studentController.getAllStudents);
 router.get('/:id', verifyToken, studentController.getStudentById);
 router.put('/:id', verifyToken, studentController.updateStudent);
+router.delete('/:id', verifyToken, studentController.deleteStudent);
 router.get('/:id/export', verifyToken, studentController.exportStudentPDF);
 
 module.exports = router;
