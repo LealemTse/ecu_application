@@ -42,7 +42,7 @@ app.use('/api/students', studentRoutes);
 
 // Root → login page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'login.html'));
+    res.sendFile(path.join(__dirname, '../frontend', 'admin.html'));
 });
 
 // Start server

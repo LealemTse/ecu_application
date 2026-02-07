@@ -37,8 +37,8 @@ sleep 3
 
 IP=$(hostname -I | awk '{print $1}')
 echo -e "\n${GREEN}Application Started!${RESET}"
+echo -e "Admin Dashboard: http://$IP:3000/"
 echo -e "Login Page:      http://$IP:3000/login.html"
-echo -e "Admin Dashboard: http://$IP:3000/admin.html"
 echo -e "Logs:            backend.log"
 echo "Services are running in background. Press Ctrl+C to stop."
 
