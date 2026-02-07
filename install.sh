@@ -39,6 +39,11 @@ else
     sudo apt-get install -y nodejs
 fi
 
+if ! check_command jq; then
+    info "Installing jq..."
+    sudo apt-get install -y jq
+fi
+
 if check_command mysql; then
     success "MySQL Client is installed."
 else
@@ -48,6 +53,14 @@ else
     sudo systemctl start mysql
     sudo systemctl enable mysql
 fi
+
+# 1.1 Install PM2 and Python Dependencies
+info "Installing PM2 and Python dependencies for PDF generation..."
+sudo npm install -g pm2
+
+sudo apt-get install -y python3-pip
+pip3 install reportlab pypdf Pillow --break-system-packages || pip3 install reportlab pypdf Pillow
+
 
 # 2. Interactive Configuration
 echo -e "\n${BOLD}${CYAN}=== System Configuration ===${RESET}"

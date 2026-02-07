@@ -6,9 +6,7 @@ RESET="\033[0m"
 # Function to kill all background processes on exit
 cleanup() {
     echo -e "\n${RED}Stopping all services...${RESET}"
-    if [ ! -z "$BACKEND_PID" ]; then
-        kill $BACKEND_PID 2>/dev/null
-    fi
+    pm2 stop ecu-backend 2>/dev/null
     exit
 }
 
@@ -23,13 +21,11 @@ pkill -f "node server.js" 2>/dev/null
 echo "Checking MySQL Service..."
 sudo systemctl start mysql
 
-echo "Starting Backend Server..."
-cd backend
-# Use nohup to run in background, but we want to see output if possible.
-# Using & to run in background and capture PID
-node server.js > ../backend.log 2>&1 &
-BACKEND_PID=$!
-echo -e "Backend running (PID: $BACKEND_PID)"
+echo "Starting Backend Server with PM2..."
+# Use ecosystem.config.js for production-grade management
+pm2 start ecosystem.config.js --env production
+BACKEND_PID=$(pm2 jlist | jq -r '.[] | select(.name=="ecu-backend") | .pid')
+echo -e "Backend managed by PM2"
 cd ..
 
 # Wait for backend to initialize
@@ -42,5 +38,5 @@ echo -e "Login Page:      http://$IP:3000/login.html"
 echo -e "Logs:            backend.log"
 echo "Services are running in background. Press Ctrl+C to stop."
 
-# Wait indefinitely
-wait $BACKEND_PID
+# Wait indefinitely for PM2 processes
+pm2 logs ecu-backend
